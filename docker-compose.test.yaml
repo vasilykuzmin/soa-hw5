@@ -1,0 +1,17 @@
+services:
+  test-runner:
+    build:
+      context: tests
+      dockerfile: Dockerfile
+      additional_contexts:
+        schemas: schemas
+    depends_on:
+      producer:
+        condition: service_healthy
+      clickhouse:
+        condition: service_healthy
+    environment:
+      API_URL: http://producer:8000/event
+      KAFKA_BROKER: kafka:9092
+      CLICKHOUSE_HOST: clickhouse
+    entrypoint: ["pytest", ".", "-v", "--tb=short"]
