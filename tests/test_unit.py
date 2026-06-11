@@ -44,7 +44,7 @@ def test_create_event(event_generator):
 
     # Freeze time for timestamp comparison
     fixed_now = datetime(2025, 1, 15, 12, 0, 0, 123456, tzinfo=timezone.utc)
-    with patch("event_generator.datetime") as mock_datetime:
+    with patch(f"{EventGenerator.__module__}.datetime") as mock_datetime:
         mock_datetime.now.return_value = fixed_now
         mock_datetime.strftime = datetime.strftime  # keep original strftime
 
