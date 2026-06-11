@@ -17,7 +17,7 @@ jobs:
       - uses: docker/setup-buildx-action@v3
       - name: Build and push
         run: |
-          docker compose -f docker-compose.yaml -f docker-compose.test.yaml build --push
+          DOCKER_BUILDKIT=1 docker compose -f docker-compose.yaml -f docker-compose.test.yaml build --push
 
   test:
     needs: build
@@ -31,14 +31,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull and run tests
         run: |
-            docker compose -f docker-compose.yaml -f docker-compose.test.yaml pull
-            docker compose -f docker-compose.yaml -f docker-compose.test.yaml up -d --no-build
-
-            WAIT_OUTPUT=$(docker compose -f docker-compose.yaml -f docker-compose.test.yaml wait test-runner)
-            EXIT_CODE=$(echo "$WAIT_OUTPUT" | grep -oE '[0-9]+' | tail -1)
-
-            docker compose -f docker-compose.yaml -f docker-compose.test.yaml logs test-runner
-
-            docker compose -f docker-compose.yaml -f docker-compose.test.yaml down -v
-
-            exit "$EXIT_CODE"
+          docker compose -f docker-compose.yaml -f docker-compose.test.yaml pull
+          docker compose -f docker-compose.yaml -f docker-compose.test.yaml up -d --no-build
+          WAIT_OUTPUT=$(docker compose -f docker-compose.yaml -f docker-compose.test.yaml wait test-runner)
+          EXIT_CODE=$(echo "$WAIT_OUTPUT" | grep -oE '[0-9]+' | tail -1)
+          docker compose -f docker-compose.yaml -f docker-compose.test.yaml logs test-runner
+          docker compose -f docker-compose.yaml -f docker-compose.test.yaml down -v
+          exit "$EXIT_CODE"
