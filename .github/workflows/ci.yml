@@ -31,11 +31,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull and run tests
         run: |
-          docker compose -f docker-compose.yaml -f docker-compose.test.yaml pull
-          docker compose -f docker-compose.yaml -f docker-compose.test.yaml up -d --no-build
-          # ... rest of test script (wait, logs, down -v)
-
-            # ... rest of your test script (wait, logs, cleanup, exit)
+            docker compose -f docker-compose.yaml -f docker-compose.test.yaml pull
+            docker compose -f docker-compose.yaml -f docker-compose.test.yaml up -d --no-build
 
             WAIT_OUTPUT=$(docker compose -f docker-compose.yaml -f docker-compose.test.yaml wait test-runner)
             EXIT_CODE=$(echo "$WAIT_OUTPUT" | grep -oE '[0-9]+' | tail -1)
