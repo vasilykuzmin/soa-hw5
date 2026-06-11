@@ -6,12 +6,10 @@ from typing import Dict, List, Optional
 import logging
 
 from movie_event_pb2 import MovieEvent, EventType, DeviceType
-from producer import KafkaProducer
-
 logger = logging.getLogger(__name__)
 
 class EventGenerator:
-    def __init__(self, producer: KafkaProducer, users_count: int = 10, movies_db: List[str] = None):
+    def __init__(self, producer, users_count: int = 10, movies_db: List[str] = None):
         self.producer = producer
         self.users_count = users_count
         self.movies_db = movies_db or [f"movie_{i}" for i in range(1, 51)]
