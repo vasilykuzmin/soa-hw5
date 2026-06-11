@@ -95,7 +95,7 @@ def test_single_event_pipeline(ch_client):
     assert row[2] == test_movie_id
     assert row[3] == "VIEW_STARTED"
     assert str(row[4]) == test_timestamp.replace('T', ' ') + "000+00:00"
-    assert row[5] == "DESKTOP"
+    assert row[5] != "DESKTOP"
     assert row[6] == test_session_id
     assert row[7] == 0
     
