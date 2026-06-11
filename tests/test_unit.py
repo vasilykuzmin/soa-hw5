@@ -5,7 +5,6 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from movie_event_pb2 import MovieEvent, EventType, DeviceType
 
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, parent_dir)
@@ -13,6 +12,7 @@ sys.path.insert(0, parent_dir)
 
 # Assuming the module to test is in 'event_generator'
 from src.producer.event_generator import EventGenerator, EventType, DeviceType
+from movie_event_pb2 import MovieEvent, EventType, DeviceType
 
 
 @pytest.fixture
