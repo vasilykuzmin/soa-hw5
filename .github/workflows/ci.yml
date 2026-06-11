@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run tests with Docker Compose
+        run: |
+          docker compose -f docker-compose.yaml -f docker-compose.test.yaml up -d --build
+
+          WAIT_OUTPUT=$(docker compose -f docker-compose.yaml -f docker-compose.test.yaml wait test-runner)
+          EXIT_CODE=$(echo "$WAIT_OUTPUT" | grep -oE '[0-9]+' | tail -1)
+
+          docker compose -f docker-compose.yaml -f docker-compose.test.yaml logs test-runner
+
+          docker compose -f docker-compose.yaml -f docker-compose.test.yaml down -v
+
+          exit "$EXIT_CODE"
