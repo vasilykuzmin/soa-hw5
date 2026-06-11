@@ -12,7 +12,7 @@ sys.path.insert(0, parent_dir)
 
 
 # Assuming the module to test is in 'event_generator'
-from src.producer.event_generator import EventGenerator, EventType, DeviceType
+from src.producer.generator import EventGenerator, EventType, DeviceType
 from movie_event_pb2 import MovieEvent, EventType, DeviceType
 
 
