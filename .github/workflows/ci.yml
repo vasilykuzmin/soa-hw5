@@ -21,18 +21,16 @@ jobs:
           docker buildx build \
             --push \
             --file tests/Dockerfile \
-            --context tests \
             --build-context schemas=schemas \
             --tag ghcr.io/vasilykuzmin/soa-hw5/test-runner:latest \
-            .
+            tests/
           
           docker buildx build \
             --push \
             --file src/producer/Dockerfile \
-            --context src/producer \
             --build-context schemas=schemas \
             --tag ghcr.io/vasilykuzmin/soa-hw5/producer:latest \
-            .
+            src/producer/
 
   test:
     needs: build
