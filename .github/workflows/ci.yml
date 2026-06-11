@@ -16,9 +16,10 @@ jobs:
       - name: Generate protobuf code
         run: |
           sudo apt-get install -y protobuf-compiler
+          cp schemas/movie_event.proto ./
           protoc --python_out=. movie_event.proto
       - name: Run unit tests
-        run: "pytest test_unit.py -v --tb=short
+        run: "pytest tests/test_unit.py -v --tb=short
 
   build:
     runs-on: ubuntu-latest
