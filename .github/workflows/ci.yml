@@ -1,42 +1,47 @@
-build:
-  runs-on: ubuntu-latest
-  permissions:
-    packages: write
-  steps:
-    - uses: actions/checkout@v4
-    - uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    - uses: docker/setup-buildx-action@v3
-    - name: Build and push
-      run: |
-        docker compose -f docker-compose.yaml -f docker-compose.test.yaml build --push
+name: CI
 
-test:
-  needs: build
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
-    - uses: docker/login-action@v3
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Pull and run tests
-      run: |
-        docker compose -f docker-compose.yaml -f docker-compose.test.yaml pull
-        docker compose -f docker-compose.yaml -f docker-compose.test.yaml up -d --no-build
-        # ... rest of test script (wait, logs, down -v)
+on: [push, pull_request]
 
-          # ... rest of your test script (wait, logs, cleanup, exit)
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/setup-buildx-action@v3
+      - name: Build and push
+        run: |
+          docker compose -f docker-compose.yaml -f docker-compose.test.yaml build --push
 
-          WAIT_OUTPUT=$(docker compose -f docker-compose.yaml -f docker-compose.test.yaml wait test-runner)
-          EXIT_CODE=$(echo "$WAIT_OUTPUT" | grep -oE '[0-9]+' | tail -1)
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Pull and run tests
+        run: |
+          docker compose -f docker-compose.yaml -f docker-compose.test.yaml pull
+          docker compose -f docker-compose.yaml -f docker-compose.test.yaml up -d --no-build
+          # ... rest of test script (wait, logs, down -v)
 
-          docker compose -f docker-compose.yaml -f docker-compose.test.yaml logs test-runner
+            # ... rest of your test script (wait, logs, cleanup, exit)
 
-          docker compose -f docker-compose.yaml -f docker-compose.test.yaml down -v
+            WAIT_OUTPUT=$(docker compose -f docker-compose.yaml -f docker-compose.test.yaml wait test-runner)
+            EXIT_CODE=$(echo "$WAIT_OUTPUT" | grep -oE '[0-9]+' | tail -1)
 
-          exit "$EXIT_CODE"
+            docker compose -f docker-compose.yaml -f docker-compose.test.yaml logs test-runner
+
+            docker compose -f docker-compose.yaml -f docker-compose.test.yaml down -v
+
+            exit "$EXIT_CODE"
