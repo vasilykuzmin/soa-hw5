@@ -18,9 +18,21 @@ jobs:
       - uses: docker/setup-buildx-action@v3
       - name: Build and push
         run: |
-          DOCKER_BUILDKIT=1 docker compose -f docker-compose.yaml -f docker-compose.test.yaml build --push
-      - name: Test login
-        run: docker pull ghcr.io/${{ github.repository }}/test-runner:latest || echo "Not found yet, that's fine"
+          docker buildx build \
+            --push \
+            --file tests/Dockerfile \
+            --context tests \
+            --build-context schemas=schemas \
+            --tag ghcr.io/vasilykuzmin/soa-hw5/test-runner:latest \
+            .
+          
+          docker buildx build \
+            --push \
+            --file src/producer/Dockerfile \
+            --context src/producer \
+            --build-context schemas=schemas \
+            --tag ghcr.io/vasilykuzmin/soa-hw5/producer:latest \
+            .
 
   test:
     needs: build
