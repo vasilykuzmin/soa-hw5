@@ -19,7 +19,7 @@ jobs:
           cp schemas/movie_event.proto ./
           protoc --python_out=. movie_event.proto
       - name: Run unit tests
-        run: "pytest tests/test_unit.py -v --tb=short
+        run: "pytest tests/test_unit.py -v --tb=short"
 
   build:
     runs-on: ubuntu-latest
