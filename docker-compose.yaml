@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
       additional_contexts:
         schemas: schemas
+    image: ghcr.io/vasilykuzmin/soa-hw5/producer:latest
     depends_on:
       kafka:
         condition: service_healthy

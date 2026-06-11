@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
       additional_contexts:
         schemas: schemas
+    image: ghcr.io/vasilykuzmin/soa-hw5/test-runner:latest
     depends_on:
       producer:
         condition: service_healthy
