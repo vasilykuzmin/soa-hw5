@@ -15,4 +15,4 @@ services:
       API_URL: http://producer:8000/event
       KAFKA_BROKER: kafka:9092
       CLICKHOUSE_HOST: clickhouse
-    entrypoint: ["pytest", ".", "-v", "--tb=short"]
+    entrypoint: ["pytest", "test_e2e.py", "-v", "--tb=short"]
